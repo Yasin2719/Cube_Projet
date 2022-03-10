@@ -7,6 +7,7 @@ const UserSchema = mongoose.Schema({
     userPseudo: {type:String, require: true},
     userMail: {type:String, require: true},
     userPassword: {type:String, require: true},
+    verified : Boolean
     //userFavoriteRessource: {type: Array[Ressource], require: false}
     
     //userRessourceExploite: [Ressource],
