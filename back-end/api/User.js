@@ -9,6 +9,7 @@ const nodemailer = require("nodemailer");
 const {v4: uuidv4} = require("uuid");
 const jwtUtils = require ('../utils/jwt.utils');
 const { generateTokenUser } = require('../utils/jwt.utils');
+var ObjectId = require('mongodb').ObjectID;
 
 let transport = nodemailer.createTransport({
     service: "gmail",
@@ -438,5 +439,46 @@ const sendResetMail = ({_id, userMail}, redirectUrl, res) =>{
         })
     })
 }
+
+//donne tout les utilisateurs de la bd
+router.get('/allUser', (req,res)=>{
+    User.find().select('-userPassword')
+    .then((data)=>{
+
+        res.json({
+            status: 200,
+            message: "Tout les users",
+            data:data
+        })
+
+    })
+    .catch((err)=>{
+        res.json({
+            status : 404,
+            message : "users introuvable"
+        })
+    })
+
+})
+
+//donne un utilisateur de la bd
+
+router.get('/oneUser&:id', (req, res)=>{
+    if (!ObjectId.isValid(req.params.id))
+    return res.status(400).send('id inconnu : ' + req.params.id)
+    
+    User.findById(req.params.id, (err, docs)=>{
+        if (!err) res.send(docs)
+        else console.log('id unknow : ' + err)
+    })
+    .select('-userPassword')
+})
+
+
+
+//modifier mail et mot de passe d'un utilisateur
+router.patch('/updateMdp&mail/:id', (req, res)=>{
+
+} )
 
 module.exports = router; 
