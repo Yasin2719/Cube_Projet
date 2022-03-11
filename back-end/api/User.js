@@ -7,6 +7,8 @@ const UserVerification = require("./../models/UserVerification");
 const PasswordReset = require("./../models/PasswordReset");
 const nodemailer = require("nodemailer");
 const {v4: uuidv4} = require("uuid");
+const jwtUtils = require ('../utils/jwt.utils');
+const { generateTokenUser } = require('../utils/jwt.utils');
 
 let transport = nodemailer.createTransport({
     service: "gmail",
@@ -27,6 +29,7 @@ transport.verify((error, success) => {
 
 router.post('/signup', (req,res)=>{
     let {userNom, userPrenom, userPseudo, userMail, userPassword} = req.body;
+    console.log(userNom)
     userNom = userNom.trim();
     userPrenom = userPrenom.trim();
     userPseudo = userPseudo.trim();
@@ -300,7 +303,8 @@ router.post('/signin', (req, res)=>{
                             res.json({
                                 status: 200,
                                 message: "connexion avec sucès",
-                                data: data
+                                token : "token generate : " + jwtUtils.generateTokenUser(data),
+                                //data: data[0]
                             })
                         }else{
                             res.json({

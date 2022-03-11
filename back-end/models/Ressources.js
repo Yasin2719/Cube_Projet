@@ -8,7 +8,7 @@ const RessourceSchema = mongoose.Schema({
     RessourceContenu: {type:String, require: true},
     RessourceCommentaires: [mongoose.Schema.Types.ObjectId,String],
     RessourceIsValid: {type:Boolean},
-    RessourceCategorie: {Categories, require: true},
+    //RessourceCategorie: {Categories, require: true},
     //RessourceCreateur: mongoose.Schema.Types.ObjectId,
 });
 
