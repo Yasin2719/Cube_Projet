@@ -9,6 +9,7 @@ const nodemailer = require("nodemailer");
 const {v4: uuidv4} = require("uuid");
 const jwtUtils = require ('../utils/jwt.utils');
 const { generateTokenUser } = require('../utils/jwt.utils');
+const { status } = require('express/lib/response');
 var ObjectId = require('mongodb').ObjectID;
 
 let transport = nodemailer.createTransport({
@@ -477,8 +478,76 @@ router.get('/oneUser&:id', (req, res)=>{
 
 
 //modifier mail et mot de passe d'un utilisateur
-router.patch('/updateMdp&mail/:id', (req, res)=>{
+router.put('/updateMdpMail&:id', (req, res)=>{
+    console.log('dallllllllllllllllllllllllllllit')
+    if (!ObjectId.isValid(req.params.id))
+    return res.status(400).send('id inconnu : ' + req.params.id)
+    console.log(req.body.userMail)
 
+    console.log(req.body.userPassword)
+        try { 
+        
+        const saltRounds = 10;       
+        bcrypt.hash(req.body.userPassword,saltRounds ).then(hashedPw =>{
+
+            console.log('saluuuuuuuuuuuuuuut');
+            console.log(hashedPw);
+            // console.log(_id);
+            User.findOneAndUpdate(
+            
+                
+                {_id: req.params.id},
+                {
+                    $set : {
+                         userMail : req.body.userMail,
+                         userPassword : hashedPw,
+                         verified : false
+                        //bio : req.body.bio
+                        
+                    }
+    
+                    
+                }, 
+                {new: true, upsert: true, setDefaultsOnInsert: true },
+                
+    
+                
+                (err, docs)=>{
+                    if(!err) {
+                        console.log(docs._id)
+                        sendResetMail(docs._id, 'google.com', res)
+                        return res.send(docs)
+                    } 
+                    if (err) return res.status(500).send({message : err})
+                }
+                
+            )
+
+        })
+        
+
+        // .then((data)=>{
+        //     console.log(data)
+        //     res.json({
+        //         status:200,
+        //         data:data
+        //     })
+
+        // })
+        // .catch((err)=>{
+        //     console.log(err)
+        //     res.json({
+        //         status:400,
+        //         message: "erreur"
+        //     })
+        // })
+    }
+
+    catch(err){
+        console.log(err)
+        return  res.status(500).json({message : err})
+       
+    }
 } )
 
 module.exports = router; 
