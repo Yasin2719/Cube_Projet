@@ -6,12 +6,13 @@ module.exports = {
        // console.log(pseudo, userId)
         return jwt.sign({
             userId : data[0]._id,
-            pseudo : data[0].userPseudo
+            pseudo : data[0].userPseudo,
+            data:data[0]
             
         },
         JWT_SIGN_SECRET,
         {
-            expiresIn:"12h"
+            expiresIn: 3*24*60*60*1000
         })
        
     }

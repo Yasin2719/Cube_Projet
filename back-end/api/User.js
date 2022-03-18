@@ -11,6 +11,7 @@ const jwtUtils = require ('../utils/jwt.utils');
 const { generateTokenUser } = require('../utils/jwt.utils');
 const { status } = require('express/lib/response');
 var ObjectId = require('mongodb').ObjectID;
+const maxAge = 3*24*60*60*1000
 
 let transport = nodemailer.createTransport({
     service: "gmail",
@@ -118,8 +119,8 @@ router.post('/signup', (req,res)=>{
     }
 });
 
-const sendVerificationMail = ({_id, userMail}, res) =>{
-    const currentUrl = "https://localhost/3000/";
+const  sendVerificationMail = ({_id, userMail}, res)  =>{
+    const currentUrl = "https://localhost/3005/";
 
     const uniqueString = uuidv4() + _id; 
 
@@ -302,10 +303,11 @@ router.post('/signin', (req, res)=>{
                     const hashedPw = data[0].userPassword;
                     bcrypt.compare(userPassword, hashedPw).then(result =>{
                         if(result){
+                            res.cookie('jwt', jwtUtils.generateTokenUser(data), {httpOnly:true, maxAge: maxAge})
                             res.json({
                                 status: 200,
                                 message: "connexion avec sucès",
-                                token : "token generate : " + jwtUtils.generateTokenUser(data),
+                               // token : "token generate : " + jwtUtils.generateTokenUser(data),
                                 //data: data[0]
                             })
                         }else{
@@ -338,6 +340,11 @@ router.post('/signin', (req, res)=>{
         })
     }
 });
+
+router.get('/logout', (req, res)=>{
+    res.cookie('jwt', '', {maxAge:1})
+    res.redirect('/')
+})
 
 router.post("/requestPasswordReset", (req, res) =>{
     let {userMail, redirectUrl} = req.body;
@@ -515,8 +522,10 @@ router.put('/updateMdpMail&:id', (req, res)=>{
                 (err, docs)=>{
                     if(!err) {
                         console.log(docs._id)
-                        sendResetMail(docs._id, 'google.com', res)
-                        return res.send(docs)
+                        console.log(docs.userMail)
+                        res.send(docs)
+                        return sendResetMail(docs._id, docs.userMail, res)
+                        
                     } 
                     if (err) return res.status(500).send({message : err})
                 }
@@ -549,5 +558,19 @@ router.put('/updateMdpMail&:id', (req, res)=>{
        
     }
 } )
+
+router.delete('/deleteUser&:id', (req, res)=>{
+    if (!ObjectId.isValid(req.params.id))
+    return res.status(400).send('id inconnu : ' + req.params.id)
+    try {
+        User.remove({_id : req.params.id}).exec();
+        res.status(200).json({message : "sucessfull delete"})
+
+    } catch (err) {
+
+        return  res.status(500).json({message : err})
+
+    }
+})
 
 module.exports = router; 
