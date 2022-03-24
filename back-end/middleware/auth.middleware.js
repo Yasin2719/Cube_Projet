@@ -28,8 +28,6 @@ module.exports.checkUser = (req, res, next) => {
         })
     }
     else {
-        // console.log('saluuuuuuuut');
-        console.log('no token');
         res.sendStatus(401)
     }
 }

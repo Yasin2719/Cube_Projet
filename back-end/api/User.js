@@ -262,6 +262,7 @@ router.post("/verify/:userId/:uniqueString", (req, res)=>{
                 })
             }
         } else{
+            console.log(result.length)
             console.log("Erreur, données vides")
             console.log(userId)
             res.json({
@@ -380,12 +381,18 @@ router.post("/requestPasswordReset", (req, res) =>{
     })
 })
 
-const sendResetMail = ({_id, userMail}, redirectUrl, res) =>{
+const sendResetMail = (_id, userMail, redirectUrl, res) =>{
+    //let{_id, userMail} = req.body;
     resetString = uuidv4() + _id;
 
     PasswordReset
     .deleteMany({ UserId: _id})
     .then(result =>{
+        console.log("entrer dans mailll")
+        console.log(userMail)
+        console.log(_id)
+        console.log(redirectUrl)
+
 
         const mailOptions = {
             from: process.env.AUTH_EMAIL,
@@ -417,6 +424,7 @@ const sendResetMail = ({_id, userMail}, redirectUrl, res) =>{
                     })
                 })
                 .catch(err =>{
+                    console.log(err);
                     res.json({
                         status: 404,
                         message: "Erreur lors de l'envoi du mail"
@@ -523,8 +531,8 @@ router.put('/updateMdpMail&:id', (req, res)=>{
                     if(!err) {
                         console.log(docs._id)
                         console.log(docs.userMail)
-                        res.send(docs)
-                        return sendResetMail(docs._id, docs.userMail, res)
+                        //res.send(docs)
+                        return sendResetMail(docs._id, docs.userMail,"8.8.8.8", res)
                         
                     } 
                     if (err) return res.status(500).send({message : err})
