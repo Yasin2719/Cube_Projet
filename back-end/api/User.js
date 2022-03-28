@@ -122,6 +122,8 @@ router.post('/signup', (req, res) => {
 const sendVerificationMail = ({ _id, userMail }, res) => {
     const currentUrl = "https://localhost/3005/";
 
+    console.log(_id,userMail,res);
+
     const uniqueString = uuidv4() + _id;
 
     const mailOptions = {
@@ -222,7 +224,7 @@ router.post("/verify/:userId/:uniqueString", (req, res) => {
                     console.log("date Superieur")
                     bcrypt.compare(uniqueString, hashedUniqueString)
                         .then(result => {
-                            if (result) {
+                            if (result.valueOf) {
                                 console.log("ModifUser")
                                 User.updateOne({ _id: userId }, { verified: true })
                                     .then(() => {
@@ -416,67 +418,67 @@ router.post('/resetPassword', (req, res) => {
                     console.log(hashedResetString);
 
                     bcrypt
-                    .compare(resetString, hashedResetString)
-                    .then((result)=>{
-                       // console.log(result);
-                        if (result.valueOf){
-                            console.log(result);
-                            const saltRounds = 10
+                        .compare(resetString, hashedResetString)
+                        .then((result) => {
+                            // console.log(result);
+                            if (result.valueOf) {
+                                console.log(result);
+                                const saltRounds = 10
 
-                            bcrypt
-                            .hash(newPassword, saltRounds)
-                            .then(hashedNewPassWord=>{
-                                User.updateOne({_id: userId}, {userPassword: hashedNewPassWord})
-                                .then(()=>{
-                                    PasswordReset
-                                    .deleteOne({userId})
-                                    .then(()=>{
+                                bcrypt
+                                    .hash(newPassword, saltRounds)
+                                    .then(hashedNewPassWord => {
+                                        User.updateOne({ _id: userId }, { userPassword: hashedNewPassWord })
+                                            .then(() => {
+                                                PasswordReset
+                                                    .deleteOne({ userId })
+                                                    .then(() => {
 
+                                                        res.json({
+                                                            status: "SUCESS",
+                                                            message: "mot de passe changé avec succès "
+                                                        })
+
+                                                    })
+                                                    .catch(error => {
+                                                        console.log(error);
+                                                        res.json({
+                                                            status: "FAILED",
+                                                            message: "erreur lors de la finilasition du reset mot de passe "
+                                                        })
+                                                    })
+
+                                            })
+                                            .catch(error => {
+                                                console.log(error);
+                                                res.json({
+                                                    status: "FAILED",
+                                                    message: "maj du mdp de l'utilisateur échoué"
+                                                })
+                                            })
+                                    })
+                                    .catch(error => {
+                                        console.log(error);
                                         res.json({
-                                            status: "SUCESS",
-                                            message: "mot de passe changé avec succès "
+                                            status: "FAILED",
+                                            message: "erreur lors du cryptage de mdp"
                                         })
+                                    })
 
-                                    })
-                                    .catch(error =>{
-                                    console.log(error);
-                                    res.json({
-                                        status: "FAILED",
-                                        message: "erreur lors de la finilasition du reset mot de passe "
-                                    })
-                                })
-
-                                })
-                                .catch(error =>{
-                                    console.log(error);
-                                    res.json({
-                                        status: "FAILED",
-                                        message: "maj du mdp de l'utilisateur échoué"
-                                    })
-                                })
-                            })
-                            .catch(error =>{
-                                console.log(error);
+                            } else {
                                 res.json({
                                     status: "FAILED",
-                                    message: "erreur lors du cryptage de mdp"
+                                    message: "réinitialisation du mot de passe invalide"
                                 })
-                            })
+                            }
 
-                        } else {
+                        })
+                        .catch(error => {
                             res.json({
                                 status: "FAILED",
-                                message: "réinitialisation du mot de passe invalide"
+                                message: "la comparaison des mdp a échoué"
                             })
-                        }
-
-                    })
-                    .catch(error => {
-                        res.json({
-                            status: "FAILED",
-                            message: "la comparaison des mdp a échoué"
                         })
-                    })
 
                 }
 
@@ -577,6 +579,16 @@ const sendResetMail = (_id, userMail, redirectUrl, res) => {
         })
 }
 
+sendMailUpdate = (_id, userMail, redirectUrl, res) => {
+    resetString = uuidv4() + _id;
+    const verifUpdate = new UserVerification({
+        userId: _id,
+        createdAt: Date.now(),
+        expiresAt: Date.now() + 21600000,
+    })
+
+}
+
 //donne tout les utilisateurs de la bd
 router.get('/allUser', (req, res) => {
     User.find().select('-userPassword')
@@ -640,8 +652,8 @@ router.put('/updateMail&:id', (req, res) => {
                 if (!err) {
                     console.log(docs._id)
                     console.log(docs.userMail)
-                    //res.send(docs)
-                    return sendResetMail(docs._id, docs.userMail, "8.8.8.8", res)
+                    console.log(docs);
+                    return sendVerificationMail(docs, res)
 
                 }
                 if (err) return res.status(500).send({ message: err })
