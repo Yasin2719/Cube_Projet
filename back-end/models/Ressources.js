@@ -1,15 +1,35 @@
 const mongoose = require("mongoose");
 const Categories = require("./Categories");
 
-const RessourceSchema = mongoose.Schema({
-    RessourceTitle: {type:String, require: true},
-    RessourceStatut: {type:String, require: true},
-    RessourceType: {type:String, require: true},
-    RessourceContenu: {type:String, require: true},
-    RessourceCommentaires: [mongoose.Schema.Types.ObjectId,String],
-    RessourceIsValid: {type:Boolean},
+const RessourceSchema = new mongoose.Schema({
+
+    posterId: { type: String, required: true },
+    // ressourceTitle: { type: String, require: true },
+    ressourceStatut: { type: String, require: true }, //public privé ou partagé
+    //ressourceType: {type:String, require: true}, //video photo texte
+    //ressourceContenu: {type:{}, require: true},
+    message: { type: String, trim: true, maxlength: 500 },
+    //photo: { type: String },
+    video: { type: String },
+    likers: { type: [String], required: true },
+    comments: {
+        type: [
+            {
+                commenterId: String,
+                commenterPseudo: String,
+                text: String,
+                timestamp: Number,
+            }
+        ],
+        required: true,
+    },
+    ressourceIsValid: { type: Boolean }, // si valider par le moderateur
     //RessourceCategorie: {Categories, require: true},
     //RessourceCreateur: mongoose.Schema.Types.ObjectId,
-});
+},
+    {
+        timestamps: true
+    }
+);
 
 module.exports = mongoose.model('Ressource', RessourceSchema);

@@ -4,8 +4,9 @@ const {checkUser, requireAuth} = require ('./middleware/auth.middleware')
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const UserRouter= require('./api/User');
-const CategorieRouter = require('./api/Categorie');
-const RessourceRouter = require('./api/Ressource');
+//const CategorieRouter = require('./api/Categorie');
+const ressourceRoutes = require('./routes/ressources')
+//const RessourceRouter = require('./api/Ressource');
 const bodyParser = require('express').json;
 const port = 3005;
 
@@ -36,8 +37,8 @@ app.get('/jwtid', requireAuth, (req, res)=>{
 
 //routes
 app.use('/user', UserRouter);
-app.use('/categorie', CategorieRouter);
-app.use('/ressource', CategorieRouter);
+//app.use('/categorie', CategorieRouter);
+app.use('/ressource', ressourceRoutes);
 
 //const server = http.createServer(app);
 

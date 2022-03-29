@@ -305,14 +305,18 @@ router.post('/signin', (req, res) => {
                     } else {
                         const hashedPw = data[0].userPassword;
                         bcrypt.compare(userPassword, hashedPw).then(result => {
+                            const token = jwtUtils.generateTokenUser(data)
                             if (result) {
                                 res.cookie('jwt', jwtUtils.generateTokenUser(data), { httpOnly: true, maxAge: maxAge })
+                                // console.log(cookie);    
+                                console.log(token);
                                 res.json({
                                     status: 200,
                                     message: "connexion avec sucès",
                                     // token : "token generate : " + jwtUtils.generateTokenUser(data),
                                     //data: data[0]
                                 })
+                                //console.log(cookie);
                             } else {
                                 res.json({
                                     status: 404,
