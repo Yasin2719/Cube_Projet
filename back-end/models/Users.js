@@ -7,7 +7,9 @@ const UserSchema = mongoose.Schema({
     userPseudo: {type:String, require: true},
     userMail: {type:String, require: true},
     userPassword: {type:String, require: true},
-    verified : Boolean
+    verified : Boolean,
+    likes : {type: [String], require: true},
+    favorites : {type: [String],require : true}
     //userFavoriteRessource: {type: Array[Ressource], require: false}
     
     //userRessourceExploite: [Ressource],

@@ -1,15 +1,17 @@
 require('dotenv').config();
+
 const app = require('express')();
 const {checkUser, requireAuth} = require ('./middleware/auth.middleware')
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const UserRouter= require('./api/User');
 //const CategorieRouter = require('./api/Categorie');
-const ressourceRoutes = require('./routes/ressources')
+const ressourceRoutes = require('./routes/ressources') // routes user yasin
+const UserRoutes = require('./routes/users')// routes user ilyes
 //const RessourceRouter = require('./api/Ressource');
 const bodyParser = require('express').json;
 const port = 3005;
-
+const cors = require('cors');
 
 mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_URL}/${process.env.DB_NAME}?retryWrites=true&w=majority`,
   { useNewUrlParser: true,
@@ -20,6 +22,14 @@ mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${
 
 app.use(bodyParser());
 app.use(cookieParser());
+app.use(cors());
+app.use(function(req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  next();
+});
 
 
 //jwt 
@@ -39,6 +49,7 @@ app.get('/jwtid', requireAuth, (req, res)=>{
 app.use('/user', UserRouter);
 //app.use('/categorie', CategorieRouter);
 app.use('/ressource', ressourceRoutes);
+app.use('/userilyes', UserRoutes);
 
 //const server = http.createServer(app);
 

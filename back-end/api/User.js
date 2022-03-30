@@ -10,7 +10,7 @@ const { v4: uuidv4 } = require("uuid");
 const jwtUtils = require('../utils/jwt.utils');
 const { generateTokenUser } = require('../utils/jwt.utils');
 const { status } = require('express/lib/response');
-var ObjectId = require('mongodb').ObjectID;
+const ObjectID = require('mongoose').Types.ObjectId
 const maxAge = 3 * 24 * 60 * 60 * 1000
 
 let transport = nodemailer.createTransport({
@@ -83,6 +83,7 @@ router.post('/signup', (req, res) => {
                         userMail,
                         userPassword: hashedPw,
                         verified: false,
+                        likes:[]
                         //userFavoriteRessource: null,
                         //userRessourceExploite: null,
                         //userRessourceMisDeCote: null
@@ -617,7 +618,7 @@ router.get('/allUser', (req, res) => {
 //donne un utilisateur de la bd
 
 router.get('/oneUser&:id', (req, res) => {
-    if (!ObjectId.isValid(req.params.id))
+    if (!ObjectID.isValid(req.params.id))
         return res.status(400).send('id inconnu : ' + req.params.id)
 
     User.findById(req.params.id, (err, docs) => {
@@ -632,7 +633,7 @@ router.get('/oneUser&:id', (req, res) => {
 //modifier mail et mot de passe d'un utilisateur
 router.put('/updateMail&:id', (req, res) => {
     console.log('dallllllllllllllllllllllllllllit')
-    if (!ObjectId.isValid(req.params.id))
+    if (!ObjectID.isValid(req.params.id))
         return res.status(400).send('id inconnu : ' + req.params.id)
     console.log(req.body.userMail)
     try {
@@ -693,7 +694,7 @@ router.put('/updateMail&:id', (req, res) => {
 })
 
 router.delete('/deleteUser&:id', (req, res) => {
-    if (!ObjectId.isValid(req.params.id))
+    if (!ObjectID.isValid(req.params.id))
         return res.status(400).send('id inconnu : ' + req.params.id)
     try {
         User.remove({ _id: req.params.id }).exec();
