@@ -22,14 +22,23 @@ mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${
 
 app.use(bodyParser());
 app.use(cookieParser());
-app.use(cors());
-app.use(function(req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  next();
-});
+
+const corsOption = {
+  credentials:true,
+  'allowedHeaders': ['sessionId', 'Content-Type'],
+  'explosedHeaders' : ['sessionId'],
+  'methods':'GET,HEAD, POST, PUT, DELETE, PATCH',
+  'preflightContinue':false
+}
+
+app.use(cors(corsOption));
+// app.use(function(req, res, next) {
+//   res.setHeader('Access-Control-Allow-Origin', '*');
+//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH');
+//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+//   res.setHeader('Access-Control-Allow-Credentials', true);
+//   next();
+// });
 
 
 //jwt 
