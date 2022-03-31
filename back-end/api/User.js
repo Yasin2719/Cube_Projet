@@ -12,6 +12,16 @@ const { generateTokenUser } = require('../utils/jwt.utils');
 const { status } = require('express/lib/response');
 const ObjectID = require('mongoose').Types.ObjectId
 const maxAge = 3 * 24 * 60 * 60 * 1000
+const multer = require ('multer')
+const upload =  multer({
+    dest: 'images'
+})
+const fs = require ('fs')
+const {promisify} = require ('util')
+const pipeline = promisify(require ('stream').pipeline)
+const { uploadErros } = require('../utils/errors.utils')
+
+
 
 let transport = nodemailer.createTransport({
     service: "gmail",
@@ -705,6 +715,58 @@ router.delete('/deleteUser&:id', (req, res) => {
         return res.status(500).json({ message: err })
 
     }
+})
+
+//photo de profil
+router.post('/upload', upload.single('file'),  (req, res)=>{
+    console.log(req);
+    console.log('salut');
+    console.log(req.file.mimetype);
+
+    try{
+        if (req.file.mimetype !== "image/jpg" && req.file.mimetype !== "image/png" && req.file.mimetype !== "image/jpeg")
+            throw Error("invalid file")
+
+        if (req.file.size > 500000) throw Error("max size")
+    }
+
+    catch(err){
+        const errors = uploadErros(err)
+        return res.status(201).json({errors})
+    }
+
+    const fileName = req.body.name + ".jpg"
+    console.log(fileName);
+
+    console.log(req.file.stream);
+     pipeline(
+        req.file.stream,
+        fs.createWriteStream(
+            `${__dirname}/../client/public/uploads/profil/${fileName}`
+        )
+    )
+    console.log('salut');
+
+
+    try{
+         UserModel.findByIdAndUpdate(
+            req.body.userId,
+            {$set : {pp:"./uploads/profil/" + fileName}},
+            {
+                new : true,
+                upsert:true, 
+                setDefaultsOnInsert:true
+            }, 
+            (err,docs)=>{
+                if (!err) return res.send(docs)
+                else return res.status(500).send({message:err})
+            }
+        )
+    }
+    catch(err){
+        return res.status(500).send({message:err})
+    }
+
 })
 
 module.exports = router; 

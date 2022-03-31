@@ -49,7 +49,7 @@ app.get('/jwtid', requireAuth, (req, res)=>{
 app.use('/user', UserRouter);
 //app.use('/categorie', CategorieRouter);
 app.use('/ressource', ressourceRoutes);
-app.use('/userilyes', UserRoutes);
+//app.use('/userilyes', UserRoutes);
 
 //const server = http.createServer(app);
 
