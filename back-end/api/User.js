@@ -13,9 +13,7 @@ const { status } = require('express/lib/response');
 const ObjectID = require('mongoose').Types.ObjectId
 const maxAge = 3 * 24 * 60 * 60 * 1000
 const multer = require ('multer')
-const upload =  multer({
-    dest: 'images'
-})
+const upload =  multer({})
 const fs = require ('fs')
 const {promisify} = require ('util')
 const pipeline = promisify(require ('stream').pipeline)

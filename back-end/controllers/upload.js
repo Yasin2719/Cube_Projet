@@ -1,8 +1,15 @@
 //const User = require ('../models/users')
-const fs = require ('fs')
+
 const {promisify} = require ('util')
 const { uploadErros } = require('../utils/errors.utils')
 const pipeline = promisify(require ('stream').pipeline)
+const multer = require ('multer')
+const upload =  multer({})
+
+
+
+
+
 
 module.exports.uploadProfil = async (req, res)=>{
     console.log(req);

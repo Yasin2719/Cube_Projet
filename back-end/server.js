@@ -68,5 +68,34 @@ server.on('listening', () => {
   const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port;
   console.log('Listening on ' + bind);
 });*/
+//Multer
+const multer  = require('multer')
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './images')
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    cb(null, file.fieldname + '-' + uniqueSuffix+".png")
+  }
+})
 
+const upload = multer({ storage: storage })
+
+
+app.post('/addUser', upload.single('img'), function (req, res) {
+    // req.file is the name of your file in the form above, here 'uploaded_file'
+    // req.body will hold the text fields, if there were any 
+    console.log(req.file.filename, req.body)
+    // insert user name  = req.body.name et  image= req.file.filename
+ });
+
+ app.post('/getUser', upload.single('img'), function (req, res) {
+   let baseUrl ='http://localhost:3005/images/';
+   let globalImag= "http://localhost:3005/images/avatar.png"
+  // req.file is the name of your file in the form above, here 'uploaded_file'
+  // req.body will hold the text fields, if there were any 
+  console.log(req.file.filename, req.body)
+  // insert user name  = req.body.name et  image= "" req.file.filename
+});
 app.listen(port);

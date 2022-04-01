@@ -54,7 +54,7 @@ module.exports.createRessource = (req, res) => {
             let prenom = result[0].userPrenom;
             let pseudo = result[0].userPseudo;
             console.log(nom, prenom, pseudo)
-
+             //let image = req.file.filename ?  "http://localhost:3005/images/" + req.file.filename : 'http://localhost:3005/images/avatar.png'   ;
             const newRessource = new RessourceModel({
                 posterId: req.body.posterId,
                 posterNom: nom,
@@ -62,7 +62,7 @@ module.exports.createRessource = (req, res) => {
                 posterPseudo: pseudo,
                 ressourceStatut: req.body.ressourceStatut,
                 message: req.body.message,
-                //photo: req.file !==null ? "./uploads/ressources/"+fileName : "",
+                //photo: image,
                 video: req.body.video,
                 likers: [],
                 comments: [],
