@@ -24,6 +24,7 @@ app.use(bodyParser());
 app.use(cookieParser());
 
 const corsOption = {
+  origin: process.env.CLIENT_URL,
   credentials:true,
   'allowedHeaders': ['sessionId', 'Content-Type'],
   'explosedHeaders' : ['sessionId'],
@@ -42,16 +43,16 @@ app.use(cors(corsOption));
 
 
 //jwt 
-app.get('*', checkUser)
-app.get('/jwtid', requireAuth, (req, res)=>{
-  // console.log('sallllllllllllllllut');
-  // console.log(res);
-  // console.log(res);
+// app.get('*', checkUser)
+// app.get('/jwtid', requireAuth, (req, res)=>{
+//   // console.log('sallllllllllllllllut');
+//   // console.log(res);
+//   // console.log(res);
 
 
-  // res.locals.user = req.user;
-  res.status(200).send(res.locals._id)
-})
+//   // res.locals.user = req.user;
+//   res.status(200).send(res.locals._id)
+// })
 
 
 //routes

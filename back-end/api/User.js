@@ -715,6 +715,98 @@ router.delete('/deleteUser&:id', (req, res) => {
     }
 })
 
+//follow 
+router.patch('/follow&:id',  (req,res)=>{
+    console.log("dans  le patch xoxo");
+    if (!ObjectID.isValid(req.params.id) || !ObjectID.isValid(req.body.idToFollow))
+    return res.status(400).send('ID unknow : '+ req.params.id)
+
+    try{
+        //add to the followers list
+         User.findByIdAndUpdate(
+
+            //id de la personne qu'il veut suivre
+            req.params.id, 
+            // req.body.idToFollow id de la personne qui est suivi
+            {$addToSet : {following : req.body.idToFollow}},
+            {new : true, upsert : true},
+            (err, docs)=>{
+                if (!err) res.status(201).json(docs)
+                else return res.status(400).json(err)
+            }
+        )
+
+        // add to following list 
+         User.findByIdAndUpdate(
+           
+            req.body.idToFollow,
+            { $addToSet: {followers : req.params.id}},
+            {new : true, upsert : true},
+            (err)=>{
+                // if (!err)
+                // res.status(201).json(docs)
+                if (err) return res.status(400).json(err)
+            }
+        )
+        
+
+    }
+    catch(err){
+        console.log(err);
+        return res.status(500).json({message : err})
+    }
+})
+
+router.patch('/unfollow&:id',  (req, res) => {
+    if (!ObjectID.isValid(req.params.id) || !ObjectID.isValid(req.body.idToUnfollow))
+    return res.status(400).send('ID unknow : '+ req.params.id)
+    try {
+         User.findByIdAndUpdate(
+            //id de la personne qu'il veut suivre
+            req.params.id, 
+            // req.body.idToFollow id de la personne qui est suivi
+            {$pull : {following : req.body.idToUnfollow}},
+            {new : true, upsert : true},
+            (err, docs)=>{
+                if (!err) res.status(201).json(docs)
+                else return res.status(400).json(err)
+            }
+        )
+
+        // add to following list 
+         User.findByIdAndUpdate(
+            req.body.idToUnfollow,
+            { $pull: {followers : req.params.id}},
+            {new : true, upsert : true},
+            (err, docs)=>{
+                // if (!err)
+                // res.status(201).json(docs)
+                if (err) return res.status(400).json(err)
+            }
+        )
+
+
+    } catch (err) {
+        console.log("ctach");
+        console.log(err);
+
+        return res.status(500).json({ message: err })
+
+    }
+})
+
+
+// router.post('/unfollow', (req,res)=>{
+//     if (!ObjectID.isValid(req.params.id))
+//     return res.status(400).send('ID unknow : '+ req.params.id)
+
+//     try{
+
+//     }
+//     catch(err){
+//         return res.status(500).json({message : err})
+//     }
+// })
 //photo de profil
 router.post('/upload', upload.single('file'),  (req, res)=>{
     console.log(req);
@@ -766,5 +858,7 @@ router.post('/upload', upload.single('file'),  (req, res)=>{
     }
 
 })
+
+
 
 module.exports = router; 
