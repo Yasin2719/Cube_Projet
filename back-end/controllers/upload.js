@@ -1,52 +1,67 @@
-//const User = require ('../models/users')
+// yasin
 
-const {promisify} = require ('util')
-const { uploadErros } = require('../utils/errors.utils')
-const pipeline = promisify(require ('stream').pipeline)
-const multer = require ('multer')
-const upload =  multer({})
-
-
+const UserModel = require('../models/Users');
+const fs = require('fs');
+const {promisify} = require('util');
+const { uploadErros } = require('../utils/errors.utils');
+const pipeline = promisify(require('stream').pipeline);
 
 
 
+module.exports.uploadProfil = async (req, res) => {
 
-module.exports.uploadProfil = async (req, res)=>{
-    console.log(req);
-    console.log('salut');
-
-    try{
+    try {
         if (req.file.detectedMimeType !== "image/jpg" && req.file.detectedMimeType !== "image/png" && req.file.detectedMimeType !== "image/jpeg")
             throw Error("invalid file")
 
         if (req.file.size > 500000) throw Error("max size")
     }
     catch(err){
-        const erros = uploadErros(err)
-        return res.status(201).json({erros})
+        const errors = uploadErros(err);
+        return res.status(201).send({ errors });
     }
 
-    const fileName = req.body.name + ".jpg"
-    console.log(fileName);
-
+    console.log(req.body.userId);
+    const fileName = req.body.userId + ".jpg";
 
     await pipeline(
         req.file.stream,
         fs.createWriteStream(
-            `${__dirname}/../client/public/uploads/profil/${fileName}`
+            `${__dirname}/../../../front-end-cube/public/uploads/profil/${fileName}`
         )
-    )
-    console.log('salut');
+    );
 
-
-    try{
+    try
+    {
         await UserModel.findByIdAndUpdate(
             req.body.userId,
-            {$set : {pp:"./uploads/profil/" + fileName}}
+            { $set : {pp: "/uploads/profil/" + fileName} },
+            {new: true, upsert: true, setDefaultsOnInsert: true}
+            // (err, docs) => {
+                // if (!err){
+                //     return res.json({
+                //         status: 200,
+                //         data: docs
+                //     });
+                // } 
+                // else return res.status(500).send({ message: err });
+            //}
         )
+        .then(result =>{
+            res.json({
+                status: 200,
+                data: result
+            })
+        })
+        .catch((err) =>{
+            res.json({
+                status: 500,
+                data: err
+            })
+        })
     }
     catch(err){
-
+        return res.status(500).send({ message: err});
     }
 }
 
