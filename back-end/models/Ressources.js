@@ -11,10 +11,10 @@ const RessourceSchema = new mongoose.Schema({
     ressourceStatut: { type: String, require: true }, //public privé ou partagé
     //ressourceType: {type:String, require: true}, //video photo texte
     //ressourceContenu: {type:{}, require: true},
-    bio: {type:String, required:true},
+    // bio: {type:String, required:true},
     message: { type: String, trim: true, maxlength: 500 },
     photo: { type: String },
-    video: { type: String },
+    // video: { type: String },
     likers: { type: [String], required: true },
     comments: {
         type: [

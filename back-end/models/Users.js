@@ -10,7 +10,7 @@ const UserSchema = mongoose.Schema({
     verified : Boolean,
     likes : {type: [String], require: true},
     favorites : {type: [String],require : true},
-    pp:{type:String, default:"./uploads/profil/random-user.png"}
+    pp:{type:String, default:"./uploads/profil/random-user.png" }
     //userFavoriteRessource: {type: Array[Ressource], require: false}
     
     //userRessourceExploite: [Ressource],

@@ -13,6 +13,8 @@ const bodyParser = require('express').json;
 const port = 3005;
 const cors = require('cors');
 
+const userUpload = require("./routes/userUpload")
+
 mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_URL}/${process.env.DB_NAME}?retryWrites=true&w=majority`,
   { useNewUrlParser: true,
     useUnifiedTopology: true })
@@ -24,6 +26,7 @@ app.use(bodyParser());
 app.use(cookieParser());
 
 const corsOption = {
+  origin: process.env.CLIENT_URL,
   credentials:true,
   'allowedHeaders': ['sessionId', 'Content-Type'],
   'explosedHeaders' : ['sessionId'],
@@ -42,16 +45,16 @@ app.use(cors(corsOption));
 
 
 //jwt 
-app.get('*', checkUser)
-app.get('/jwtid', requireAuth, (req, res)=>{
-  // console.log('sallllllllllllllllut');
-  // console.log(res);
-  // console.log(res);
+// app.get('*', checkUser)
+// app.get('/jwtid', requireAuth, (req, res)=>{
+//   // console.log('sallllllllllllllllut');
+//   // console.log(res);
+//   // console.log(res);
 
 
-  // res.locals.user = req.user;
-  res.status(200).send(res.locals._id)
-})
+//   // res.locals.user = req.user;
+//   res.status(200).send(res.locals._id)
+// })
 
 
 //routes
@@ -59,6 +62,7 @@ app.use('/user', UserRouter);
 //app.use('/categorie', CategorieRouter);
 app.use('/ressource', ressourceRoutes);
 //app.use('/userilyes', UserRoutes);
+app.use('/userUpload', userUpload);
 
 //const server = http.createServer(app);
 
@@ -70,17 +74,18 @@ server.on('listening', () => {
 });*/
 //Multer
 const multer  = require('multer')
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './images')
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-    cb(null, file.fieldname + '-' + uniqueSuffix+".png")
-  }
-})
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, './images')
+//   },
+//   filename: function (req, file, cb) {
+//     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+//     cb(null, file.fieldname + '-' + uniqueSuffix+".png")
+//   }
+// })
 
-const upload = multer({ storage: storage })
+const upload = multer();
+// { storage: storage }
 
 
 app.post('/addUser', upload.single('img'), function (req, res) {
