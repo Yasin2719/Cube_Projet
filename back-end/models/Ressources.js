@@ -14,7 +14,8 @@ const RessourceSchema = new mongoose.Schema({
     // bio: {type:String, required:true},
     message: { type: String, trim: true, maxlength: 500 },
     photo: { type: String },
-    // video: { type: String },
+    video: { type: String },
+    link: { type: String },
     likers: { type: [String], required: true },
     comments: {
         type: [

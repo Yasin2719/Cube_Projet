@@ -113,7 +113,8 @@ module.exports.createRessource = (req, res) => {
                 ressourceStatut: req.body.ressourceStatut,
                 message: req.body.message,
                 photo: req.file !== null ? "/public/uploads/ressources/" + fileName : "",
-                // video: req.body.video,
+                video: req.body.video,
+                link: req.body.link,
                 likers: [],
                 comments: [],
                 ressourceIsValid: true,//false par defaut des lors du backoffice
