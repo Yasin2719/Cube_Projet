@@ -717,6 +717,10 @@ router.delete('/deleteUser&:id', (req, res) => {
     }
 })
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> aef31ed8cdbb4b5a81200a74fd0c24f61c607daf
 //follow 
 router.patch('/follow&:id',  (req,res)=>{
     console.log("dans  le patch xoxo");
@@ -814,7 +818,10 @@ router.patch('/unfollow&:id',  (req, res) => {
 //     console.log(req);
 //     console.log('salut');
 //     console.log(req.file.mimetype);
+<<<<<<< HEAD
 
+=======
+>>>>>>> aef31ed8cdbb4b5a81200a74fd0c24f61c607daf
 
 router.post("/upload", upload.single('file') , uploadController.uploadProfil)
 
