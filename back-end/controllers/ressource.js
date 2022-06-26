@@ -73,8 +73,10 @@ module.exports.ressourceByUserId = (req, res) => {
 module.exports.createRessource = (req, res) => {
 
     let fileName;
+   
 
     if(req.file !== null){
+         console.log(req.file);
         try {
             if (req.file.detectedMimeType !== "image/jpg" && req.file.detectedMimeType !== "image/png" && req.file.detectedMimeType !== "image/jpeg")
                 throw Error("invalid file")
@@ -83,7 +85,9 @@ module.exports.createRessource = (req, res) => {
         }
         catch(err){
             const errors = uploadErros(err);
+            console.log(errors);
             return res.status(201).send({ errors });
+            
         }
     
         fileName = req.body.posterId + Date.now() + '.jpg'
@@ -118,6 +122,8 @@ module.exports.createRessource = (req, res) => {
                 likers: [],
                 comments: [],
                 ressourceIsValid: true,//false par defaut des lors du backoffice
+                RessourceCategorieId : req.body.RessourceCategorieId,
+                ressourceTypeRelation : req.body.ressourceTypeRelation
         
             })
 
@@ -130,6 +136,7 @@ module.exports.createRessource = (req, res) => {
                 // return res.status(200).json(ress)
             }
             catch (err) {
+                console.log(err);
                 res.status(400).send(err)
             }
             

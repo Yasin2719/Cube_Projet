@@ -29,7 +29,8 @@ const RessourceSchema = new mongoose.Schema({
         required: true,
     },
     ressourceIsValid: { type: Boolean }, // si valider par le moderateur
-    //RessourceCategorie: {Categories, require: true},
+    RessourceCategorieId: {type:String, require: true},
+    ressourceTypeRelation:{type:[String], require:true}
     //RessourceCreateur: mongoose.Schema.Types.ObjectId,
 },
     {

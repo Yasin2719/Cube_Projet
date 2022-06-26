@@ -5,7 +5,7 @@ const {checkUser, requireAuth} = require ('./middleware/auth.middleware')
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const UserRouter= require('./api/User');
-//const CategorieRouter = require('./api/Categorie');
+const CategorieRouter = require('./api/Categorie');
 const ressourceRoutes = require('./routes/ressources') // routes user yasin
 const UserRoutes = require('./routes/users')// routes user ilyes
 //const RessourceRouter = require('./api/Ressource');
@@ -59,7 +59,7 @@ app.use(cors(corsOption));
 
 //routes
 app.use('/user', UserRouter);
-//app.use('/categorie', CategorieRouter);
+app.use('/categorie', CategorieRouter);
 app.use('/ressource', ressourceRoutes);
 //app.use('/userilyes', UserRoutes);
 app.use('/userUpload', userUpload);
