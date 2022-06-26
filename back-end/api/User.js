@@ -717,7 +717,7 @@ router.delete('/deleteUser&:id', (req, res) => {
     }
 })
 
-<<<<<<< HEAD
+
 //follow 
 router.patch('/follow&:id',  (req,res)=>{
     console.log("dans  le patch xoxo");
@@ -811,13 +811,10 @@ router.patch('/unfollow&:id',  (req, res) => {
 //     }
 // })
 //photo de profil
-router.post('/upload', upload.single('file'),  (req, res)=>{
-    console.log(req);
-    console.log('salut');
-    console.log(req.file.mimetype);
-=======
-//photo de profil version yasin
->>>>>>> 36496474518e440616edb7f0f74ad3d26beb95f3
+// router.post('/upload', upload.single('file'),  (req, res)=>{
+//     console.log(req);
+//     console.log('salut');
+//     console.log(req.file.mimetype);
 
 router.post("/upload", upload.single('file') , uploadController.uploadProfil)
 
