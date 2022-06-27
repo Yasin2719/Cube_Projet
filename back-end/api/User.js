@@ -41,13 +41,14 @@ transport.verify((error, success) => {
 })
 
 router.post('/signup', (req, res) => {
-    let { userNom, userPrenom, userPseudo, userMail, userPassword } = req.body;
+    let { userNom, userPrenom, userPseudo, userMail, userPassword, statut } = req.body;
     console.log(userNom)
     userNom = userNom.trim();
     userPrenom = userPrenom.trim();
     userPseudo = userPseudo.trim();
     userMail = userMail.trim();
     userPassword = userPassword.trim();
+    statut = statut;
 
 
     if (userNom == "" || userPrenom == "" || userPseudo == "" || userMail == "" || userPassword == "") {
@@ -93,7 +94,8 @@ router.post('/signup', (req, res) => {
                         userMail,
                         userPassword: hashedPw,
                         verified: false,
-                        likes:[]
+                        likes:[],
+                        statut : "1",
                         //userFavoriteRessource: null,
                         //userRessourceExploite: null,
                         //userRessourceMisDeCote: null
@@ -101,6 +103,100 @@ router.post('/signup', (req, res) => {
 
                     newUser.save().then(result => {
                         sendVerificationMail(result, res);
+
+                    })
+                        .catch(err => {
+                            res.json({
+                                status: 404,
+                                message: "echec lors de la création de l'utilisateur"
+                            })
+                        })
+                })
+                    .catch(err => {
+                        res.json({
+                            status: 404,
+                            message: "Erreur lors du cryptage du mot de passe",
+                            data: err.message
+                        })
+                    })
+
+            }
+        }).catch(err => {
+            console.log(err);
+            res.json({
+                status: 404,
+                message: "Une erreur s'est produite"
+            })
+        })
+
+    }
+});
+
+router.post('/createUserAdmin', (req, res) => {
+    let { userNom, userPrenom, userPseudo, userMail, userPassword, statut } = req.body;
+    
+    console.log(req.body)
+    userNom = userNom.trim();
+    userPrenom = userPrenom.trim();
+    userPseudo = userPseudo.trim();
+    userMail = userMail.trim();
+    userPassword = userPassword.trim();
+    statut = statut;
+
+
+    if (userNom == "" || userPrenom == "" || userPseudo == "" || userMail == "" || userPassword == "") {
+        res.json({
+            status: 404,
+            message: "Valeur nulle détéctée"
+        });
+    } else if (!/^[a-zA-Z]*$/.test(userNom)) {
+        res.json({
+            status: 404,
+            message: "Syntaxe invalide pour le nom"
+        });
+    } else if (!/^[a-zA-Z]*$/.test(userPrenom)) {
+        res.json({
+            status: 404,
+            message: "Syntaxe invalide pour le prénom"
+        });
+    } else if (!/\S+@\S+\.\S+/.test(userMail)) {
+        res.json({
+            status: 404,
+            message: "Syntaxe invalide pour le mail"
+        });
+    } else if (userPassword.length < 8) {
+        res.json({
+            status: 404,
+            message: "Mot de passe trop court"
+        });
+    } else {
+        User.find({ userMail }).then(result => {
+            if (result.length) {
+                res.json({
+                    status: 404,
+                    message: "Mail déjà utilisé"
+                })
+            } else {
+
+                const saltRounds = 10;
+                bcrypt.hash(userPassword, saltRounds).then(hashedPw => {
+                    const newUser = new User({
+                        userNom,
+                        userPrenom,
+                        userPseudo,
+                        userMail,
+                        userPassword: hashedPw,
+                        verified: true,
+                        likes:[],
+                        statut : statut,// 1 utilisateur lambda, 2 modo, 3 admin, 4 super admin
+                        //userFavoriteRessource: null,
+                        //userRessourceExploite: null,
+                        //userRessourceMisDeCote: null
+                    });
+
+
+                    newUser.save().then(result => {
+                        res.status(201).json(result)
 
                     })
                         .catch(err => {
@@ -717,10 +813,6 @@ router.delete('/deleteUser&:id', (req, res) => {
     }
 })
 
-<<<<<<< HEAD
-=======
-
->>>>>>> aef31ed8cdbb4b5a81200a74fd0c24f61c607daf
 //follow 
 router.patch('/follow&:id',  (req,res)=>{
     console.log("dans  le patch xoxo");
@@ -818,10 +910,6 @@ router.patch('/unfollow&:id',  (req, res) => {
 //     console.log(req);
 //     console.log('salut');
 //     console.log(req.file.mimetype);
-<<<<<<< HEAD
-
-=======
->>>>>>> aef31ed8cdbb4b5a81200a74fd0c24f61c607daf
 
 router.post("/upload", upload.single('file') , uploadController.uploadProfil)
 

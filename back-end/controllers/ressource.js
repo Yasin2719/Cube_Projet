@@ -76,7 +76,6 @@ module.exports.createRessource = (req, res) => {
    
 
     if(req.file !== null){
-         console.log(req.file);
         try {
             if (req.file.detectedMimeType !== "image/jpg" && req.file.detectedMimeType !== "image/png" && req.file.detectedMimeType !== "image/jpeg")
                 throw Error("invalid file")
@@ -116,7 +115,7 @@ module.exports.createRessource = (req, res) => {
                 posterPseudo: pseudo,
                 ressourceStatut: req.body.ressourceStatut,
                 message: req.body.message,
-                photo: req.file !== null ? "/public/uploads/ressources/" + fileName : "",
+                photo: req.file !== null ? "/uploads/ressources/" + fileName : "",
                 video: req.body.video,
                 link: req.body.link,
                 likers: [],
