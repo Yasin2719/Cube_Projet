@@ -23,6 +23,20 @@ router.get('/allCAtegorie', (req, res)=>{
     })
 })
 
+
+router.get('/getLibelleCategorie&:id', (req, res) => {
+    if (!ObjectID.isValid(req.params.id))
+        return res.status(400).send('id inconnu : ' + req.params.id)
+
+    Categorie.findById(req.params.id, (err, docs) => {
+        if (!err) res.send(docs)
+        else console.log('id unknow : ' + err)
+    })
+})
+
+
+
+
 router.post('/NewCategorie', (req, res) =>{
     let {CategorieLibelle} = req.body;
     CategorieLibelle = CategorieLibelle.trim();

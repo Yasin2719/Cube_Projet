@@ -24,5 +24,8 @@ router.patch('/delete-comment-ressource/:id', ressourceController.deleteCommentR
 // upload
 // router.post('/upload', upload.single('file'), uploadController.uploadProfil)
 
+// filtres 
+router.get('/filterLike', ressourceController.filterLike)
+
 
 module.exports = router
