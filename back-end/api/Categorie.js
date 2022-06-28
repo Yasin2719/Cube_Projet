@@ -25,6 +25,7 @@ router.get('/allCAtegorie', (req, res)=>{
 
 
 router.get('/getLibelleCategorie&:id', (req, res) => {
+    // console.log(req.params.id);
     if (!ObjectID.isValid(req.params.id))
         return res.status(400).send('id inconnu : ' + req.params.id)
 
