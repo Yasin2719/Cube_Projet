@@ -390,58 +390,63 @@ module.exports.deleteCommentRessource = (req, res)=>{
 }
 
 
-    //filtre ressources
-module.exports.filterLike = (req, res)=> {
-    RessourceModel.find((err, docs) => {
-        UserModel.find({_id :req.body.posterId})
-        .then((data)=>{
-            // res.json({
-            //     status: 200,
-            //     data: docs,
-            // })
-            UserModel.
-            
-            
-            
-            
-            aggregate(
+//     //filtre ressources
 
-                [{$project: { count: { $size:"$[likers]" }}}]
-                // [
-                //     {
-                //         $group: {_id:"$likers"}
-                //     },
-                //     {
-                //         $count : "likers"
-                //     },
-                //     {
-                //         $sort : "likers"
-                //     }
-                // ]
-            ).then((docs)=>{
-                console.log(docs);
-            })
+
+
+
+
+// module.exports.filterLike = (req, res)=> {
+//     RessourceModel.find((err, docs) => {
+//         UserModel.find({_id :req.body.posterId})
+//         .then((data)=>{
+//             // res.json({
+//             //     status: 200,
+//             //     data: docs,
+//             // })
+//             UserModel.
+            
+            
+            
+            
+//             aggregate(
+
+//                 [{$project: { count: { $size:"$[likers]" }}}]
+//                 // [
+//                 //     {
+//                 //         $group: {_id:"$likers"}
+//                 //     },
+//                 //     {
+//                 //         $count : "likers"
+//                 //     },
+//                 //     {
+//                 //         $sort : "likers"
+//                 //     }
+//                 // ]
+//             ).then((docs)=>{
+//                 console.log(docs);
+//             })
         
-        })
-        .catch((err)=>{
-            res.json({
-                status: 400,
-                message: "erreur de récuperation des data"
-            });
-            console.log('Erreur d\'envoi des data' + err);
-        })
-    })
-    // .aggregate(
-    //     [
-    //         {
-    //             $group: {_id:"$likers"}
-    //         },
-    //         {
-    //             $count : "likers"
-    //         }
-    //     ]
-    // )
+//         })
+//         .catch((err)=>{
+//             res.json({
+//                 status: 400,
+//                 message: "erreur de récuperation des data"
+//             });
+//             console.log('Erreur d\'envoi des data' + err);
+//         })
+//     })
+//     // .aggregate(
+//     //     [
+//     //         {
+//     //             $group: {_id:"$likers"}
+//     //         },
+//     //         {
+//     //             $count : "likers"
+//     //         }
+//     //     ]
+//     // )
 
-}
+// }
     
     
