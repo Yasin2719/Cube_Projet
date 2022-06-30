@@ -2,6 +2,8 @@ const express = require('express');
 require ("dotenv").config();
 const router = express.Router();
 const Categorie = require('./../models/Categories');
+const Ressource = require('./../models/Ressources')
+const ObjectID = require('mongoose').Types.ObjectId
 
 router.get('/allCAtegorie', (req, res)=>{
     Categorie.find({})
@@ -21,6 +23,21 @@ router.get('/allCAtegorie', (req, res)=>{
     })
 })
 
+
+router.get('/getLibelleCategorie&:id', (req, res) => {
+    // console.log(req.params.id);
+    if (!ObjectID.isValid(req.params.id))
+        return res.status(400).send('id inconnu : ' + req.params.id)
+
+    Categorie.findById(req.params.id, (err, docs) => {
+        if (!err) res.send(docs)
+        else console.log('id unknow : ' + err)
+    })
+})
+
+
+
+
 router.post('/NewCategorie', (req, res) =>{
     let {CategorieLibelle} = req.body;
     CategorieLibelle = CategorieLibelle.trim();
@@ -30,11 +47,11 @@ router.post('/NewCategorie', (req, res) =>{
             status: "FAILED",
             message: "Valeur nulle détécté"
         });
-    } else if(!/^[a-zA-Z]*$/.test(CategorieLibelle)){
-        res.json({
-            status: "FAILED",
-            message: "Syntaxe invalide"
-        })
+    // } else if(!/^[" "-a-zA-Z]*$/.test(CategorieLibelle)){
+    //     res.json({
+    //         status: "FAILED",
+    //         message: "Syntaxe invalide"
+    //     })
     } else{
         Categorie.find({CategorieLibelle}).then(result =>{
             if(result.length){
@@ -71,13 +88,49 @@ router.post('/NewCategorie', (req, res) =>{
     }
 });
 
+router.delete('/deleteCategorie&:id', (req, res) => {
+    if (!ObjectID.isValid(req.params.id))
+        return res.status(400).send('id inconnu : ' + req.params.id)
+    try {
+        Categorie.remove({ _id: req.params.id }).exec();
+        res.status(200).json({ message: "sucessfull delete" })
+
+    } catch (err) {
+
+        return res.status(500).json({ message: err })
+
+    }
+    Ressource.updateMany(
+
+
+        {RessourceCategorieId: req.params.id},
+        {
+            $set: {
+                RessourceCategorieId: "62b87be63d6e54f95c06a578",
+
+            }
+        },
+        { new: true, upsert: true, setDefaultsOnInsert: true },
+        (err, docs) => {
+            if (!err) {
+                //console.log(docs);
+                // return res.status(200).send({data: docs})
+
+            }
+            if (err) return console.log(err);
+            // res.status(500).send({ message: err })
+        }
+
+    )
+})
+
 router.post('/deleteCategorie/:CategorieId', (req, res) =>{
     let {CategorieId} = req.body;
 
-    Categorie.find({_id: CategorieId})
+    Categorie.find({id: CategorieId})
     .then((data)=>{
         if(data.length>0){
-            Categorie.deleteOne({_id: CategorieId})
+            Categorie.deleteOne({id: CategorieId})
             .then((result) =>{
                 res.json({
                     status: "SUCCES",
@@ -93,6 +146,7 @@ router.post('/deleteCategorie/:CategorieId', (req, res) =>{
                 })
             })
         }else{
+            console.log(_id);
             res.json({
                 status: "FAILED",
                 message: "Erreur lors de la recherche de la categorie"
@@ -100,11 +154,37 @@ router.post('/deleteCategorie/:CategorieId', (req, res) =>{
         }
     })
     .catch((error)=>{
+        console.log("categorie inexistante");
+        console.log(error);
+        
         res.json({
             status: "FAILED",
             message: "Categorie inexistante"
         })
     })
+
+    Ressource.findOneAndUpdate(
+
+
+        {RessourceCategorieId: CategorieId},
+        {
+            $set: {
+                RessourceCategorieId: "62b871d0418a2350ece3feb8",
+
+            }
+        },
+        { new: true, upsert: true, setDefaultsOnInsert: true },
+        (err, docs) => {
+            if (!err) {
+                //console.log(docs);
+                // return res.status(200).send({data: docs})
+
+            }
+            if (err) return console.log(err);
+            // res.status(500).send({ message: err })
+        }
+
+    )
 });
 
 router.post('/updateCategorie/:CategorieId', (req, res)=>{

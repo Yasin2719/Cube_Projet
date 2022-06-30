@@ -7,7 +7,13 @@ const UserSchema = mongoose.Schema({
     userPseudo: {type:String, require: true},
     userMail: {type:String, require: true},
     userPassword: {type:String, require: true},
-    verified : Boolean
+    verified : Boolean,
+    statut : {type:String, require :true}, // 1 utilisateur lambda, 2 modo, 3 admin, 4 super admin
+    likes : {type: [String], require: true},
+    favorites : {type: [String],require : true},
+    pp:{type:String, default:"/uploads/profil/random-user.png"},
+    followers: {type:[String]},
+    following:{type:[String]}
     //userFavoriteRessource: {type: Array[Ressource], require: false}
     
     //userRessourceExploite: [Ressource],
